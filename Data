@@ -1,0 +1,206 @@
+#include<iostream>
+using namespace std;
+class LinkedList
+{
+	private:
+		struct list	 
+		{
+			int data;
+			struct list *next;
+		};
+		list *head;	
+		int size;				
+	
+	public:
+		LinkedList()		
+		{ 
+			head = NULL; 
+			size = 0;
+		}
+		
+		void Insert(int) ;
+		void Delete(int) ;
+		void Display() ;
+		void Undo(int) ;
+		void Redo(int) ;
+};
+
+void LinkedList :: Insert(int num)
+{
+	list *newNode, *nodePtr, *preNode;
+	newNode = new list;			
+	newNode->data = num;					
+	size++;								
+	
+	nodePtr = head;							
+	
+	if (!head)
+	{
+		head = newNode;					
+		newNode->next = NULL;			
+	}
+	
+	else if ( num < nodePtr->data )		
+	{
+		nodePtr = head;
+        head = newNode;
+        head->next = nodePtr;
+	}
+	
+	else								
+	{
+			
+		while ( nodePtr!= NULL && nodePtr->data < num )
+		{
+			preNode	= nodePtr;
+			nodePtr = nodePtr->next;
+		}
+		if ( preNode == NULL )
+		{
+			head = newNode;				
+			newNode->next = NULL;		
+		}
+		else
+		{
+			preNode->next = newNode;
+			newNode->next = nodePtr;
+		}
+	}
+}
+
+
+void LinkedList::Delete(int num)
+{
+	list *nodePtr, *preNode;	
+
+	if (head->data == num)				
+	{
+		nodePtr = head->next;
+		delete head;
+		head = nodePtr;
+		size--;			
+	}
+	else
+	{
+		nodePtr = head;	
+             	
+		
+		while (nodePtr != NULL && nodePtr->data != num)
+		{
+			preNode = nodePtr;
+			nodePtr = nodePtr->next;
+		}
+
+		preNode->next = nodePtr->next;
+		delete nodePtr;
+		size--;		
+	}
+}
+
+
+void LinkedList::Display ()
+{
+	list *nodePtr;
+	nodePtr = head;	 
+	
+	while ( nodePtr )
+	{
+		cout << nodePtr->data;
+		nodePtr = nodePtr->next;
+	}		
+	cout << endl;
+}
+
+void LinkedList::Undo(int num)
+{
+	
+	LinkedList::Insert(num) ;
+	cout << num << " Undo." ;
+}
+
+void LinkedList::Redo(int num)
+{
+	LinkedList::Delete(num) ;
+	cout << num << " Redo." ;
+}
+
+int main()
+{
+	LinkedList *l = new LinkedList() ; 
+	
+	int undo = 0, redo , num , option ;
+	
+	Menu:
+	
+	
+	cout << "\n 1. Insert" ;
+	cout << "\n 2. Delete" ;
+	cout << "\n 3. Undo" ;
+	cout << "\n 4. Redo" ;
+	cout << "\n 5. Display" ;
+	cout << "\n 6. Exit" ;
+
+	redo = 0 ;
+	cout << "\n Your Option : " ;
+	cin >> option ; 
+	
+	
+	switch(option)
+	{
+		case 1:
+			cout << "\n Enter Number : " ;
+			cin >> num ;
+			l->Insert(num) ;
+			goto Menu ;
+			
+			case 2 :
+				cout << "\n Enter Number : " ;
+				cin >> num ;
+				
+				l->Delete(num) ;
+				
+				goto Menu ;
+				
+				case 3:
+					
+					if(redo>0)
+					{
+						cout << "\n Nothing" ;
+						goto Menu ;
+					}
+					
+					else
+					{
+						l->Undo(num) ;
+						undo++ ;
+						goto Menu ;
+					}
+					
+					
+					case 4:
+						if(undo = 0)
+						{
+							cout << "\n Nothing" ;
+							goto Menu ;
+						}
+						else
+						{
+							l->Redo(num) ;
+							redo++ ;
+							undo-- ;
+							goto Menu ;
+						}
+						
+						case 5:
+							l->Display() ;
+							goto Menu ;
+							
+							case 6:
+								exit(0) ;
+										
+			
+	}
+	
+	return 0 ;
+	
+}
