@@ -1,4 +1,4 @@
-// ***Fahmeen Mazhar***
+// ***FM***
 // Operating System
 // Creating a code that allows a user to choose a choice of "Scheduling Algorithm"
 // OS LAB..
